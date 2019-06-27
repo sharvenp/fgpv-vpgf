@@ -110,6 +110,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_api_src_events_.mapclickevent.html#apiinitiated" class="tsd-kind-icon">api<wbr>Initiated</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_api_src_events_.mapclickevent.html#features" class="tsd-kind-icon">features</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_api_src_events_.mapclickevent.html#offsetx" class="tsd-kind-icon">offsetX</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_api_src_events_.mapclickevent.html#offsety" class="tsd-kind-icon">offsetY</a></li>
@@ -142,7 +143,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L53">api/src/events.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L62">api/src/events.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -162,78 +163,98 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="apiinitiated" class="tsd-anchor"></a>
+					<h3>api<wbr>Initiated</h3>
+					<div class="tsd-signature tsd-kind-icon">api<wbr>Initiated<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L62">api/src/events.ts:62</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Indicates whether this map click event was triggered programmatically via the API. If true, some properties like the screen position of the click will be undefined.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="features" class="tsd-anchor"></a>
 					<h3>features</h3>
 					<div class="tsd-signature tsd-kind-icon">features<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L53">api/src/events.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L57">api/src/events.ts:57</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A stream of features as they become available once a map click has occurred.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="offsetx" class="tsd-anchor"></a>
 					<h3>offsetX</h3>
-					<div class="tsd-signature tsd-kind-icon">offsetX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">offsetX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#offsetx">offsetX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L13">api/src/events.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L13">api/src/events.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="offsety" class="tsd-anchor"></a>
 					<h3>offsetY</h3>
-					<div class="tsd-signature tsd-kind-icon">offsetY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">offsetY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#offsety">offsetY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L14">api/src/events.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L14">api/src/events.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="pagex" class="tsd-anchor"></a>
 					<h3>pageX</h3>
-					<div class="tsd-signature tsd-kind-icon">pageX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">pageX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#pagex">pageX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L11">api/src/events.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L11">api/src/events.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="pagey" class="tsd-anchor"></a>
 					<h3>pageY</h3>
-					<div class="tsd-signature tsd-kind-icon">pageY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">pageY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#pagey">pageY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L12">api/src/events.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L12">api/src/events.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="screenx" class="tsd-anchor"></a>
 					<h3>screenX</h3>
-					<div class="tsd-signature tsd-kind-icon">screenX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">screenX<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#screenx">screenX</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L10">api/src/events.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L10">api/src/events.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="screeny" class="tsd-anchor"></a>
 					<h3>screenY</h3>
-					<div class="tsd-signature tsd-kind-icon">screenY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<div class="tsd-signature tsd-kind-icon">screenY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#screeny">screenY</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L9">api/src/events.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L9">api/src/events.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,7 +265,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#xy">xy</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L8">api/src/events.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L8">api/src/events.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -267,7 +288,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_api_src_events_.mouseevent.html">MouseEvent</a>.<a href="_api_src_events_.mouseevent.html#equals">equals</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/70b79d4/api/src/events.ts#L16">api/src/events.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/fgpv-vpgf/fgpv-vpgf/blob/f91a9af/api/src/events.ts#L16">api/src/events.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -350,6 +371,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_api_src_events_.mapclickevent.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_api_src_events_.mapclickevent.html#apiinitiated" class="tsd-kind-icon">api<wbr>Initiated</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_api_src_events_.mapclickevent.html#features" class="tsd-kind-icon">features</a>
