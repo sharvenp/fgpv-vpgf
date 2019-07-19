@@ -798,6 +798,192 @@ However, instead of calling the handlerIn function immediately, hoverIntent wait
     
 
     
+    <h4 class="name" id="autolink"><span class="type-signature"></span>autolink<span class="signature">(items, options)</span><span class="type-signature"> &rarr; {Array|String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Autolinks strings; doesn't not modify the original.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of strings or a single string to autolink</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>[optional = {}] linkifyjs options object; the only default changed is classname (rv-linkified) for consistency</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_formatters.filter.js.html">core/formatters.filter.js</a>, <a href="core_formatters.filter.js.html#line53">line 53</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>array or string of autolinked strings</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="autolink"><span class="type-signature"></span>autolink<span class="signature">(text, userOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
@@ -992,192 +1178,6 @@ However, instead of calling the handlerIn function immediately, hoverIntent wait
     </dt>
     <dd>
         
-<span class="param-type">String</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="autolink"><span class="type-signature"></span>autolink<span class="signature">(items, options)</span><span class="type-signature"> &rarr; {Array|String}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Autolinks strings; doesn't not modify the original.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>items</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-|
-
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>array of strings or a single string to autolink</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>[optional = {}] linkifyjs options object; the only default changed is classname (rv-linkified) for consistency</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_formatters.filter.js.html">core/formatters.filter.js</a>, <a href="core_formatters.filter.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>array or string of autolinked strings</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-|
-
 <span class="param-type">String</span>
 
 
@@ -1635,7 +1635,7 @@ Potentially, it should work for other languages using accented characters. The c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line56">line 56</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -1815,7 +1815,7 @@ Potentially, it should work for other languages using accented characters. The c
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line80">line 80</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -3213,7 +3213,7 @@ in the direction given by forward. To find the first/last element in a focus tra
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line118">line 118</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line125">line 125</a>
     </li></ul></dd>
     
 
@@ -3582,7 +3582,7 @@ in the direction given by forward. To find the first/last element in a focus tra
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line147">line 147</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line154">line 154</a>
     </li></ul></dd>
     
 
@@ -3877,7 +3877,7 @@ in the direction given by forward. To find the first/last element in a focus tra
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line175">line 175</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line182">line 182</a>
     </li></ul></dd>
     
 
@@ -4432,7 +4432,7 @@ forward/backward between the two elements - regardless of their actual tab order
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line98">line 98</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line105">line 105</a>
     </li></ul></dd>
     
 
@@ -7298,7 +7298,7 @@ it seems to be a bug from svg.js library.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line135">line 135</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -7949,7 +7949,7 @@ via the notification action button.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line27">line 27</a>
+        <a href="core_graphics.service.js.html">core/graphics.service.js</a>, <a href="core_graphics.service.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -8450,7 +8450,7 @@ Adding <code>{{ ::$root.uid($id) }}</code> inside a template will return a <code
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 16 2019 12:13:57 GMT+0000 (UTC)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 19 2019 14:57:13 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>
