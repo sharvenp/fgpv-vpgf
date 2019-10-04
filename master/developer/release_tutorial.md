@@ -24,6 +24,8 @@ Before you start this tutorial.  Please setup remotes `origin` and `upstream` th
 
     ```
         npm version [ major | minor | patch | prerelease ]
+        or
+        npm version [version]
     ```
 
 5. The local branch will auto update with a new tag and changes to `package.json`. However the commit will not end up on any of the remote branches. It should be merged into the develop or master branch depending on the release.
@@ -38,7 +40,7 @@ Before you start this tutorial.  Please setup remotes `origin` and `upstream` th
         git checkout [-b] develop
     ```
 
-3. Change the version tag in `package.json` and `package.lock.json` to the appropriate version.
+3. Change the version tag in `package.json` and `package-lock.json` to the appropriate version.
 
     ```json
         "version": [version]
@@ -97,7 +99,7 @@ Before you start this tutorial.  Please setup remotes `origin` and `upstream` th
         Please ensure GeoApi and Plugins has been released first.  Ideally the versions of both should match the version of the viewer
     </p>
 
-4. Update the documentation urls in `README.md` to point to the current version of the documents. Note the actual URLs will not exist until the new tag is generated (a later step).  The url change will generally only involve updating the version number in the path.
+4. Update the documentation urls in `README.md` to point to the current version of the documents. Note the actual URLs will not exist until the new tag is generated (a later step).  The url change will generally only involve updating the version number in the path. Also update the path to the samples folder url.
 
 5. Do `npm install` to update the local geoApi and plugins module, then do a sanity check on the viewer.
 

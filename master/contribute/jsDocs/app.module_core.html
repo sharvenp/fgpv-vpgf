@@ -34,7 +34,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>bookmarkService handles creation and parsing of bookmarks.</p></div>
+            <div class="description"><p>reloadService manages state through map reloads</p></div>
         
 
         
@@ -69,7 +69,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_bookmark.service.js.html">core/bookmark.service.js</a>, <a href="core_bookmark.service.js.html#line1">line 1</a>
+        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -2961,166 +2961,6 @@ and then reloads the map.</p>
     
 
     
-    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
-and now has returned.
-Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bookmark</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>keys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, initial, additionalKeys<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
@@ -3297,6 +3137,166 @@ Trigger process to apply the cached bookmark and adjust based on new RCS keys</p
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line99">line 99</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
+and now has returned.
+Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bookmark</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keys</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -7226,166 +7226,6 @@ and then reloads the map.</p>
     
 
     
-    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
-and now has returned.
-Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bookmark</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>keys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, initial, additionalKeys<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
@@ -7562,6 +7402,166 @@ Trigger process to apply the cached bookmark and adjust based on new RCS keys</p
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line99">line 99</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
+and now has returned.
+Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bookmark</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keys</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -8564,7 +8564,7 @@ the map using the new configs</p>
     <div class="container-overview">
     
         
-            <div class="description"><p>reloadService manages state through map reloads</p></div>
+            <div class="description"><p>bookmarkService handles creation and parsing of bookmarks.</p></div>
         
 
         
@@ -8599,7 +8599,7 @@ the map using the new configs</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line1">line 1</a>
+        <a href="core_bookmark.service.js.html">core/bookmark.service.js</a>, <a href="core_bookmark.service.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -11491,166 +11491,6 @@ and then reloads the map.</p>
     
 
     
-    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
-and now has returned.
-Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bookmark</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>keys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
     <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, initial, additionalKeys<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
@@ -11827,6 +11667,166 @@ Trigger process to apply the cached bookmark and adjust based on new RCS keys</p
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line99">line 99</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~loadWithBookmark"><span class="type-signature">(inner) </span>loadWithBookmark<span class="signature">(bookmark, keys)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Handles the Back-to-Cart scenario. User has left the map page, re-adjusted their cart,
+and now has returned.
+Trigger process to apply the cached bookmark and adjust based on new RCS keys</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bookmark</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The bookmark containing the desired state of the viewer</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keys</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>List of new RCS keys that may differ from the content of the bookmark</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_reload.service.js.html">core/reload.service.js</a>, <a href="core_reload.service.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -12825,7 +12825,7 @@ the map using the new configs</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 23 2019 19:43:13 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 15:44:24 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
