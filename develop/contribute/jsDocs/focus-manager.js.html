@@ -26,9 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {
-    InternalsFocusManager
-} from './internals-focus-manager'
+            <pre class="prettyprint source linenums"><code>import { InternalsFocusManager } from './internals-focus-manager';
 // eslint-disable-next-line max-statements
 
 // delay in milliseconds from time focus is lost to when action is taken
@@ -41,7 +39,7 @@ const statuses = {
     NONE: undefined,
     INACTIVE: 'NOT_ACTIVE',
     WAITING: 'WAITING',
-    ACTIVE: 'ACTIVE'
+    ACTIVE: 'ACTIVE',
 };
 // focus selectors we want to target
 const focusSelector = [
@@ -56,7 +54,7 @@ const focusSelector = [
     'button:not([disabled]):not([nofocus])',
     '.rv-esri-map',
     '[tabindex=-2]',
-    '[tabindex=-3]'
+    '[tabindex=-3]',
 ].join(', ');
 
 // object containing all currently depressed keyboard keys
@@ -156,6 +154,13 @@ class Viewer {
             this.setDialogAction(this.mdDialog.hide);
         }
 
+        // When the viewer status changes, update the label for the keyboard control button.
+        // If the viewer is not active, the button should say "activate keyboard controls".
+        const instructionsButton = this.rootElement.find('.rv-keyboard-controls-button');
+        var scope = angular.element(instructionsButton).scope();
+
+        scope.self.type = status;
+
         this.status = status;
         // add attribute to the rootElement so angular directives can be aware of their focus state
         this.rootElement.attr('rv-focus-status', status);
@@ -193,7 +198,7 @@ class Viewer {
      */
     clearTabindex() {
         this.rootElement
-            .find(focusSelector)
+            .find(focusSelector + ', [tabindex=0]')
             .not('.rv-esri-map')
             .not('[tabindex=-2]')
             .not('[tabindex=-3]')
@@ -223,7 +228,7 @@ class ViewerGroup {
      * @return  {Object}    Viewer instance which contains the element, or undefined if not contained
      */
     contains(el) {
-        return this.viewerList.find(v => v.contains(el));
+        return this.viewerList.find((v) => v.contains(el));
     }
 
     /**
@@ -232,7 +237,7 @@ class ViewerGroup {
      * @return  {Object}    Viewer instance which contains the element, or undefined if not contained
      */
     trapped(el) {
-        return this.viewerList.find(v => v.trapped(el));
+        return this.viewerList.find((v) => v.trapped(el));
     }
 
     /**
@@ -241,21 +246,21 @@ class ViewerGroup {
      * @return  {Object}    Viewer instance in the given state
      */
     status(status) {
-        return this.viewerList.find(v => v.status === status);
+        return this.viewerList.find((v) => v.status === status);
     }
 
     /**
      * Sets the status of all viewers to inactive
      */
     deactivate() {
-        this.viewerList.forEach(v => v.setStatus(statuses.INACTIVE));
+        this.viewerList.forEach((v) => v.setStatus(statuses.INACTIVE));
     }
 }
 
 const viewerGroup = new ViewerGroup();
 
 window.RAMP.focusManager = {
-    addViewer
+    addViewer,
 };
 
 /**
@@ -297,7 +302,6 @@ function focusableSearch(element, forward, gotoEnd = false) {
     let lastElementSet = gotoEnd ? foundElement : $();
     // loop until we locate an element
     while (gotoEnd || (foundElement.length === 0 &amp;&amp; element.length > 0)) {
-
         // we have reached a focus trap, no more traversal is needed
         if (element.is('[rv-trap-focus]')) {
             // breaking here knowing that lastElementSet is very first/last focusable
@@ -311,8 +315,9 @@ function focusableSearch(element, forward, gotoEnd = false) {
                 // being reversed and we're on the first element, we would want the very last element in the focus trap
                 // however if focus should be leaving a fullpage viewer, do not wrap an return an empty element (none found)
                 const viewer = viewerGroup.contains(element);
-                return element.is(viewer.rootElement) &amp;&amp; viewer.isFullscreen ?
-                    $() : focusableSearch(refElem, !forward, true);
+                return element.is(viewer.rootElement) &amp;&amp; viewer.isFullscreen
+                    ? $()
+                    : focusableSearch(refElem, !forward, true);
             }
         }
 
@@ -354,7 +359,12 @@ function focusableSearch(element, forward, gotoEnd = false) {
  * @return  {Object}    jQuery element of last focusable element from history
  */
 function lastVisibleHistoryElement() {
-    return $(history.slice().reverse().find(el => el.is(elemIsFocusable)));
+    return $(
+        history
+            .slice()
+            .reverse()
+            .find((el) => el.is(elemIsFocusable))
+    );
 }
 
 /**
@@ -372,20 +382,21 @@ function elemIsFocusable(index, element) {
     const map = getMapInstance();
 
     // prep list on enhancedTable
-    if (el.parents('#enhancedTable')[0] !== undefined &amp;&amp; map !== undefined) {
+    if (map !== undefined &amp;&amp; el.parents(`#${map.id} .enhancedTable`)[0] !== undefined) {
         const enhancedTable = map.panelRegistryObj.getById('enhancedTable');
         enhancedTable.listInit.next();
     }
-    return el.is(':visible') &amp;&amp;
+    return (
+        el.is(':visible') &amp;&amp;
         !el.is(':hidden') &amp;&amp;
         el.css('visibility') !== 'hidden' &amp;&amp;
         el.css('opacity') !== 0 &amp;&amp;
         // avoid setting focus on closing menu items
         !el.parents().hasClass('md-leave') &amp;&amp;
         !el.parents().hasClass('md-leave-add') &amp;&amp;
-        !el.is('[nofocus]');
+        !el.is('[nofocus]')
+    );
 }
-
 
 /**
  * Finds a link (created by the createLink function)
@@ -397,13 +408,12 @@ function elemIsFocusable(index, element) {
  */
 function hasLink(forward) {
     const histElem = lastVisibleHistoryElement();
-    return linkedList.find(link => histElem.is(link.getDestinationElement(!forward)));
+    return linkedList.find((link) => histElem.is(link.getDestinationElement(!forward)));
 }
-
 
 function getMapInstance() {
     let currentMapInstance;
-    window.RAMP.mapInstances.forEach(mapI => {
+    window.RAMP.mapInstances.forEach((mapI) => {
         if ($('#' + mapI.id).has(document.activeElement)[0] !== undefined) {
             currentMapInstance = mapI;
         }
@@ -425,9 +435,14 @@ function shiftFocus(forward = true, onlyUseHistory = false) {
 
     // if the enhancedTable is open and  focused on zoom button, and back tabbing
     // go to the last list in the enhancedTable
-    if (document.activeElement === $('.rv-mapnav-content').find('button')[0] &amp;&amp; !forward &amp;&amp;
-        getMapInstance() !== undefined &amp;&amp; !getMapInstance().panelRegistryObj.getById('enhancedTable').isClosed) {
-        const list = $('#enhancedTable').find('.rv-focus-list')[2];
+    const map = getMapInstance();
+    if (
+        document.activeElement === $('.rv-mapnav-content').find('button')[0] &amp;&amp;
+        !forward &amp;&amp;
+        map !== undefined &amp;&amp;
+        !map.panelRegistryObj.getById('enhancedTable').isClosed
+    ) {
+        const list = $(`#${map.id} .enhancedTable`).find('.rv-focus-list')[2];
         initInternalFocusManager($(list));
         return;
     }
@@ -457,8 +472,8 @@ function shiftFocus(forward = true, onlyUseHistory = false) {
 
     if (onlyUseHistory) {
         lastVisibleHistoryElement().rvFocus();
-
-    } else if (link &amp;&amp; link[0][0] !== link[1][0]) { // check that the link created is not the element with itself
+    } else if (link &amp;&amp; link[0][0] !== link[1][0]) {
+        // check that the link created is not the element with itself
         // goto target if focusable
         if (link.getDestinationElement(forward).is(elemIsFocusable)) {
             changeIconFocus(link.getDestinationElement(forward));
@@ -508,9 +523,7 @@ function changeIconFocus(element) {
 function resetIconFocus(element) {
     // find all expanded symbology icons and remove no focus attribute when running it back on the next traversal
     const viewer = viewerGroup.contains(element);
-    viewer.rootElement
-        .find('.focusOnce')
-        .removeAttr('noFocus');
+    viewer.rootElement.find('.focusOnce').removeAttr('noFocus');
 }
 
 function initInternalFocusManager(focusSearch) {
@@ -525,7 +538,7 @@ function initInternalFocusManager(focusSearch) {
         }
         lastVisibleHistoryElement().attr('tabindex', -1);
         ifm = new InternalsFocusManager(list);
-        ifm.returnToFM.subscribe(list => {
+        ifm.returnToFM.subscribe((list) => {
             linkToNextIfm(list);
         });
         return ifm;
@@ -569,7 +582,6 @@ function linkToNextIfm(list) {
  * @param {Object} event - the onMouseDown event object
  */
 function onMouseDown(event) {
-
     const evtTarget = $(event.target);
 
     const viewer = viewerGroup.contains(evtTarget); // check if the viewer was clicked
@@ -587,7 +599,7 @@ function onMouseDown(event) {
                 ifm = undefined;
             }
             ifm = new InternalsFocusManager(list, true);
-            ifm.returnToFM.subscribe(list => {
+            ifm.returnToFM.subscribe((list) => {
                 linkToNextIfm(list);
             });
 
@@ -623,15 +635,12 @@ function onMouseDown(event) {
     // fgpv-vpgf/fgpv-vpgf#2665; fgpv-vpgf/fgpv-vpgf#2969
     if (viewer.status !== statuses.ACTIVE) {
         const oldScroll = jQwindow.scrollTop();
-        jQwindow.one('scroll', () =>
-            jQwindow.scrollTop(oldScroll));
+        jQwindow.one('scroll', () => jQwindow.scrollTop(oldScroll));
     }
 
     ignoreFocusLoss = true;
     viewer.setStatus(statuses.ACTIVE);
-    evtTarget
-        .closest('.rv-esri-map, ' + focusSelector)
-        .rvFocus();
+    evtTarget.closest('.rv-esri-map, ' + focusSelector).rvFocus();
 }
 /**
  * Displays focus management dialog instructions and sets status to waiting when focus moves to
@@ -650,20 +659,12 @@ function onFocusin(event) {
         return;
     }
 
+    // force focus on the `open keyboard controls` button.
+    const keyControlsElem = viewer.rootElement.find('.rv-keyboard-controls-button > button')[0];
+    keyControlsElem.origfocus();
+
     history.push(targetEl);
     viewer.setStatus(statuses.WAITING);
-
-    viewer.setDialogAction(() =>
-        viewer.mdDialog
-            .show({
-                contentElement: viewer.rootElement.find('.rv-focus-dialog-content > div'),
-                clickOutsideToClose: false,
-                escapeToClose: false,
-                disableParentScroll: false,
-                parent: viewer.rootElement.find('rv-shell'),
-                focusOnOpen: false
-            })
-            .then(() => viewer.clearTabindex()));
 }
 
 /**
@@ -675,7 +676,6 @@ function onFocusin(event) {
  */
 // eslint-disable-next-line complexity
 function onKeydown(event) {
-
     keyCode = event.keyCode;
 
     /*jshint maxcomplexity:12 */
@@ -686,15 +686,20 @@ function onKeydown(event) {
     const isExempt = exemptElem.length > 0;
     keys[event.which] = true;
 
-
     if (viewerActive &amp;&amp; !isExempt) {
         // set viewer inactive but allow tab action to be handled by the browser
-        if (event.which === 9 &amp;&amp; keys[27]) { // escape + tab keydown
+        if (event.which === 9 &amp;&amp; keys[27]) {
+            // escape + tab keydown
             viewerActive.setStatus(statuses.INACTIVE);
+            viewerActive.clearTabindex();
 
-        } else if (event.which === 9 ||
+            // Fixes an issue where keyup is not called in some cases causing focus manager to have an incorrect pressed key state
+            delete keys[27];
+        } else if (
+            event.which === 9 ||
             ((event.which === 37 || event.which === 39 || event.which === 13) &amp;&amp;
-                ($('.highlighted')[0] !== undefined || $('.ag-cell-focus')[0] !== undefined))) {
+                ($('.highlighted')[0] !== undefined || $('.ag-cell-focus')[0] !== undefined))
+        ) {
             // tab keydown only
             // or hackily activate shiftFocus for left/right arrows and enter
             // (when there is still highlighted item)
@@ -714,13 +719,15 @@ function onKeydown(event) {
                 shiftFocus(event.which === 40);
             }
         }
+    }
 
-    } else if (viewerWaiting) {
-        if (event.which === 13 || event.which === 32) { // enter or spacebar
-            event.preventDefault(true);
+    // If the viewer is currently waiting (i.e., the keyboard instructions button is visible)
+    if (viewerWaiting) {
+        if (event.which === 13 || event.which === 32) {
+            // enter or spacebar
             viewerWaiting.setStatus(statuses.ACTIVE);
-
-        } else if (event.which === 9) { // tab key
+        } else if (event.which === 9) {
+            // tab key
             viewerWaiting.clearTabindex();
             viewerWaiting.setStatus(statuses.INACTIVE);
         }
@@ -746,7 +753,6 @@ function onKeyup(event) {
  * @param  {Object} event the focusout event object
  */
 function onFocusout(event) {
-
     if (ignoreFocusLoss) {
         return;
     }
@@ -754,7 +760,6 @@ function onFocusout(event) {
     const viewer = viewerGroup.status(statuses.ACTIVE);
     if ($(event.target).closest('[rv-ignore-focusout]').length > 0) {
         restoreFromHistory = true;
-
     } else if (viewer &amp;&amp; !lockFocus &amp;&amp; event.relatedTarget === null) {
         // Allow for a short time as determined by focusoutDelay in milliseconds so that when focus
         // leaves unexpectedly, focus can be manually set and we don't need to be back through history
@@ -800,27 +805,23 @@ function noSourceLink(targetElemSet) {
  * @param   {Object}    targetElemSet    the jQuery element set to find a focusable element
  */
 function link(sourceEl, targetElemSet) {
-    const targetEl = targetElemSet
-        .find(focusSelector)
-        .addBack(focusSelector)
-        .filter(elemIsFocusable)
-        .first();
+    const targetEl = targetElemSet.find(focusSelector).addBack(focusSelector).filter(elemIsFocusable).first();
 
     if (targetEl.length === 0) {
         return;
     }
 
-    linkedList = linkedList.filter(bundle => !bundle[1].is(targetEl));
+    linkedList = linkedList.filter((bundle) => !bundle[1].is(targetEl));
 
     linkedList.push({
         0: sourceEl,
         1: targetEl,
-        getDestinationElement: forward => forward ? targetEl : sourceEl
+        getDestinationElement: (forward) => (forward ? targetEl : sourceEl),
     });
 }
 
 $.extend({
-    link: noSourceLink
+    link: noSourceLink,
 });
 
 $.fn.link = function (targetElement) {
@@ -857,9 +858,7 @@ HTMLElement.prototype.rvFocus = $.fn.rvFocus = function (opts = {}) {
 
     // Calling rvFocus implies the viewer should be active, unless there is no viewer registered which throws an error. Default to normal focus.
     try {
-        viewerGroup
-            .contains(jqueryElem)
-            .setStatus(statuses.ACTIVE);
+        viewerGroup.contains(jqueryElem).setStatus(statuses.ACTIVE);
     } catch (e) {
         elem.origfocus(); // browser implementation
     }
@@ -875,7 +874,7 @@ HTMLElement.prototype.rvFocus = $.fn.rvFocus = function (opts = {}) {
         lockFocus = false;
 
         // check focus history, if exists make it last element in history, else do nothing
-        const histIndex = history.findIndex(elem => elem.is(jqueryElem));
+        const histIndex = history.findIndex((elem) => elem.is(jqueryElem));
         history.length = histIndex !== -1 ? histIndex : history.length;
 
         if (jqueryElem.is(':focus')) {
@@ -908,12 +907,13 @@ HTMLElement.prototype.focus = $.fn.focus = function () {
         // must process via rvFocus so that FM is aware of the change, and can add it to the history.
         // otherwise calling origfocus bypasses FM, which makes it think focus is being lost and tries to recover
         el[0].rvFocus({
-            exempt: true
+            exempt: true,
         }); // more performant to use el[0] instead of el, since jQuery focus is implemented on HTMLElement.prototype.focus
-
     } else if (viewerGroup.trapped(el)) {
-        console.warn('focusManager', `*rvFocus* must be used to set focus ` +
-            `on elements that are a part of the viewer`);
+        console.warn(
+            'focusManager',
+            `*rvFocus* must be used to set focus ` + `on elements that are a part of the viewer`
+        );
         return;
     } else {
         el[0].origfocus();
@@ -941,20 +941,19 @@ function disableCommonPrototypes(funcName) {
             if (takeAction || !viewerGroup.trapped($(this.target))) {
                 originalFunc.call(this);
             } else {
-                console.warn('focusManager', `*${funcName}* is disabled on elements ` +
-                    `inside or part of the viewer`);
+                console.warn('focusManager', `*${funcName}* is disabled on elements ` + `inside or part of the viewer`);
             }
         };
     })();
 }
 
 // Watches body for element insertions for more "fine grained control" of host page elements.
-const bodyObserver = new MutationObserver(mutations => {
+const bodyObserver = new MutationObserver((mutations) => {
     mutations
-        .filter(m => m.type === 'childList' &amp;&amp; m.addedNodes &amp;&amp; m.addedNodes.length > 0)
-        .forEach(m => {
+        .filter((m) => m.type === 'childList' &amp;&amp; m.addedNodes &amp;&amp; m.addedNodes.length > 0)
+        .forEach((m) => {
             const nodeList = m.addedNodes;
-            nodeList.forEach(node => {
+            nodeList.forEach((node) => {
                 /** ----- AM Menu Component -----
                  * We allow the angular material menu component to set its own initial focus by default. However when there is no focusable
                  * element in the component, AM does not set focus which leaves focus on the triggering element. This is turn makes it impossible to close
@@ -980,8 +979,27 @@ const bodyObserver = new MutationObserver(mutations => {
 
 bodyObserver.observe(document.body, {
     attributes: false,
-    childList: true
+    childList: true,
 });
+
+/**
+ * Fix Firefox behaviour where a focused element which is subsequently hidden is not blurred.
+ *
+ * In cases such as the side menu the close button remained focused when the panel was closed.
+ * Since this panel has a focus trap, the FM has no where to move focus and the keyboard navigation
+ * locks up.
+ *
+ * This fix blurs the active element if its not visible allowing the FM to recover from history.
+ *
+ */
+if (navigator.userAgent.indexOf('Firefox') > -1) {
+    $(document).on('keyup', () => {
+        const activeElem = $(document.activeElement);
+        if (!activeElem.is(':visible')) {
+            activeElem.blur();
+        }
+    });
+}
 </code></pre>
         </article>
     </section>
@@ -992,13 +1010,13 @@ bodyObserver.observe(document.body, {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 15:42:11 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 13 2021 15:50:11 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
