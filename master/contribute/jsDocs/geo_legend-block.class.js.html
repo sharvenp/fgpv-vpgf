@@ -63,14 +63,14 @@ function LegendBlockFactory(
 
         get map() {
             return configService.getSync.map;
-        }
+        },
     };
 
     const TYPES = {
         INFO: 'info',
         NODE: 'node',
         GROUP: 'group',
-        SET: 'set'
+        SET: 'set',
     };
 
     /**
@@ -107,7 +107,7 @@ function LegendBlockFactory(
             // for WFS layers proxy resolves when the layer record is made and "loaded"
             // for other layer types proxy resolves when the layer record is made (layer is not necessarily loaded at this point)
             this._proxyPromise
-                .then(proxy => {
+                .then((proxy) => {
                     this._proxy = proxy;
 
                     // This will apply initial state values from the layer config object to the layer proxy object.
@@ -120,7 +120,7 @@ function LegendBlockFactory(
                     this._updateApiLayerOpacity(this);
                     this._updateApiLayerQueryable(this);
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(`Layer proxy failed to resolve for "${this.layerConfig.id}"`, error);
                     // if the proxy fails to resolve (layer data failed to load, etc.), set status to `rv-error`
                     this._lastState = Geo.Layer.States.ERROR;
@@ -335,7 +335,6 @@ function LegendBlockFactory(
             this._layerConfig.state.boundingBox = value;
         }
 
-
         /**
          * Layer config object persists through layer reload (corresponding layer record and legend blocks are destroyed),
          * the changed snapshot value will be processed in geoApi on the subsequent generation of layer records.
@@ -465,11 +464,12 @@ function LegendBlockFactory(
         set metadataUrl(url) {
             this._layerConfig.metadataUrl = url;
         }
-
         get catalogueUrl() {
             return this._layerConfig.catalogueUrl;
         }
-
+        get enableStructuredDelete() {
+            return this._layerConfig.enableStructuredDelete;
+        }
         get availableControls() {
             return this._layerConfig.controls;
         }
@@ -493,7 +493,7 @@ function LegendBlockFactory(
                     // TODO: find a better way to find the dynamic ConfigLayer than directly comparing geoApi proxies
                     // potentially can add a 'layerId' to the proxy which will allow for an easy comparison
                     // of both the id and index to find the correct layer
-                    layer = appInfo.mapi.layers.allLayers.find(l => l._layerProxy === this.proxy);
+                    layer = appInfo.mapi.layers.allLayers.find((l) => l._layerProxy === this.proxy);
                 } else {
                     layer = appInfo.mapi.layers.getLayersById(this._layerConfig.id)[0];
                 }
@@ -517,7 +517,7 @@ function LegendBlockFactory(
                     // TODO: find a better way to find the dynamic ConfigLayer than directly comparing geoApi proxies
                     // potentially can add a 'layerId' to the proxy which will allow for an easy comparison
                     // of both the id and index to find the correct layer
-                    layer = appInfo.mapi.layers.allLayers.find(l => l._layerProxy === this.proxy);
+                    layer = appInfo.mapi.layers.allLayers.find((l) => l._layerProxy === this.proxy);
                 } else {
                     layer = appInfo.mapi.layers.getLayersById(this._layerConfig.id)[0];
                 }
@@ -542,7 +542,7 @@ function LegendBlockFactory(
                     // TODO: find a better way to find the dynamic ConfigLayer than directly comparing geoApi proxies
                     // potentially can add a 'layerId' to the proxy which will allow for an easy comparison
                     // of both the id and index to find the correct layer
-                    layer = appInfo.mapi.layers.allLayers.find(l => l._layerProxy === this.proxy);
+                    layer = appInfo.mapi.layers.allLayers.find((l) => l._layerProxy === this.proxy);
                 } else {
                     layer = appInfo.mapi.layers.getLayersById(this._layerConfig.id)[0];
                 }
@@ -766,7 +766,7 @@ function LegendBlockFactory(
             // wait for the layer to load before trying to make a bounding box or validate the projection
             const deregisterWatch = $rootScope.$watch(
                 () => this.proxyWrapper.state,
-                state => {
+                (state) => {
                     if (state === Geo.Layer.States.LOADED) {
                         // this is the first chance to properly create bounding box for this legend node
                         // since it's created on demand and cannot be created by geoapi when creating layerRecord
@@ -805,7 +805,7 @@ function LegendBlockFactory(
          * @function synchronizeControlledProxyWrappers
          */
         synchronizeControlledProxyWrappers() {
-            this._controlledProxyWrappers.forEach(proxyWrapper => {
+            this._controlledProxyWrappers.forEach((proxyWrapper) => {
                 proxyWrapper.visibility = this.visibility;
                 proxyWrapper.opacity = this.opacity;
             });
@@ -826,6 +826,9 @@ function LegendBlockFactory(
             return [this.proxyWrapper].concat(this._controlledProxyWrappers);
         }
 
+        get enableStructuredDelete() {
+            return this.proxyWrapper.enableStructuredDelete;
+        }
         get availableControls() {
             return this.proxyWrapper.availableControls;
         }
@@ -841,7 +844,7 @@ function LegendBlockFactory(
                 return Geo.Layer.States.BAD_PROJECTION;
             }
 
-            const allStates = this._allProxyWrappers.map(proxyWrapper => proxyWrapper.state);
+            const allStates = this._allProxyWrappers.map((proxyWrapper) => proxyWrapper.state);
             const combinedState = this._aggregateStates(allStates);
 
             return combinedState;
@@ -854,7 +857,7 @@ function LegendBlockFactory(
                 'rv-loaded': () => super.template,
                 'rv-refresh': () => super.template,
                 'rv-error': () => 'error',
-                'rv-bad-projection': () => 'bad-projection'
+                'rv-bad-projection': () => 'bad-projection',
             };
 
             return stateToTemplate[this.state]();
@@ -914,12 +917,11 @@ function LegendBlockFactory(
             return this.proxyWrapper.visibility;
         }
         set visibility(value) {
-
             if (this.isControlSystemDisabled('visibility')) {
                 return;
             }
 
-            this._allProxyWrappers.forEach(proxyWrapper => (proxyWrapper.visibility = value));
+            this._allProxyWrappers.forEach((proxyWrapper) => (proxyWrapper.visibility = value));
 
             updateLegendElementVisibility(this);
 
@@ -955,7 +957,7 @@ function LegendBlockFactory(
                 return;
             }
 
-            this._allProxyWrappers.forEach(proxyWrapper => (proxyWrapper.opacity = value));
+            this._allProxyWrappers.forEach((proxyWrapper) => (proxyWrapper.opacity = value));
 
             updateLegendElementOpacity(this);
         }
@@ -996,10 +998,12 @@ function LegendBlockFactory(
             if (!this._bboxProxy) {
                 // no cached bounding box found
                 this._bboxProxy = layerRegistry.registerBoundingBoxRecord(this.bboxId, this.proxyWrapper.extent);
-
-            } else if (!gapiService.gapi.proj.isSpatialRefEqual(
-                this._bboxProxy.spatialReference, ref.map.selectedBasemap.spatialReference)) {
-
+            } else if (
+                !gapiService.gapi.proj.isSpatialRefEqual(
+                    this._bboxProxy.spatialReference,
+                    ref.map.selectedBasemap.spatialReference
+                )
+            ) {
                 // cached bbox projection not compatible
                 this._bboxProxy = layerRegistry.removeBoundingBoxRecord(this.bboxId);
                 this._bboxProxy = layerRegistry.registerBoundingBoxRecord(this.bboxId, this.proxyWrapper.extent);
@@ -1023,9 +1027,13 @@ function LegendBlockFactory(
         set boundingBox(value) {
             if (!value &amp;&amp; !this._bboxProxy) {
                 return;
-            } else if (!this._bboxProxy || !gapiService.gapi.proj.isSpatialRefEqual(
-                this._bboxProxy.spatialReference, ref.map.selectedBasemap.spatialReference)) {
-
+            } else if (
+                !this._bboxProxy ||
+                !gapiService.gapi.proj.isSpatialRefEqual(
+                    this._bboxProxy.spatialReference,
+                    ref.map.selectedBasemap.spatialReference
+                )
+            ) {
                 this._makeBbox();
             }
 
@@ -1143,7 +1151,7 @@ function LegendBlockFactory(
 
         // FIXME this can probably move directly into geoApi
         getSymbol(featureAttrs) {
-            return this.formattedData.then(attrSet =>
+            return this.formattedData.then((attrSet) =>
                 gapiService.gapi.symbology.getGraphicIcon(featureAttrs, attrSet.renderer)
             );
         }
@@ -1291,10 +1299,12 @@ function LegendBlockFactory(
         }
 
         synchronizeControlledEntries() {
-            this._activeEntries.filter(entry => entry.controlled).forEach(controlledEntry => {
-                controlledEntry.visibility = this.visibility;
-                controlledEntry.opacity = this.opacity;
-            });
+            this._activeEntries
+                .filter((entry) => entry.controlled)
+                .forEach((controlledEntry) => {
+                    controlledEntry.visibility = this.visibility;
+                    controlledEntry.opacity = this.opacity;
+                });
         }
 
         _entries = [];
@@ -1356,7 +1366,7 @@ function LegendBlockFactory(
                 'rv-bad-projection': () => {
                     _removeReload();
                     return 'bad-projection';
-                }
+                },
             };
 
             return stateToTemplate[this.state]();
@@ -1415,7 +1425,7 @@ function LegendBlockFactory(
         }
 
         get visibility() {
-            return this._observableEntries.some(entry => entry.visibility);
+            return this._observableEntries.some((entry) => entry.visibility);
         }
         set visibility(value) {
             if (this.isControlSystemDisabled('visibility')) {
@@ -1424,7 +1434,7 @@ function LegendBlockFactory(
 
             if (value) {
                 // Toggle each child entry's visibility on
-                this._activeEntries.forEach(entry => {
+                this._activeEntries.forEach((entry) => {
                     // If a child is a group propogate the toggled value
                     // This allows show all to effect all child groups
                     if (entry.blockType === 'group') {
@@ -1443,7 +1453,7 @@ function LegendBlockFactory(
                 });
                 this._toggled = false;
             } else {
-                this._activeEntries.forEach(entry => {
+                this._activeEntries.forEach((entry) => {
                     entry.oldVisibility = entry.visibility;
                     if (entry.visibility) {
                         // Don't set the visibility if it doesn't change
@@ -1463,7 +1473,7 @@ function LegendBlockFactory(
          * @return {Boolean} `true` is all observed legend blocks are set to be queriable; `false` otherwise;
          */
         get query() {
-            return this._observableEntries.some(entry => entry.query);
+            return this._observableEntries.some((entry) => entry.query);
         }
         /**
          * @param {Boolean} value zxxzcs
@@ -1474,7 +1484,7 @@ function LegendBlockFactory(
                 return;
             }
 
-            this._activeEntries.forEach(entry => (entry.query = value));
+            this._activeEntries.forEach((entry) => (entry.query = value));
 
             updateLegendElementQueryable(this);
 
@@ -1507,7 +1517,7 @@ function LegendBlockFactory(
                 value = entries[0].opacity;
                 // Check that they have the same opacity and if it has all the same opacity if it's a group
                 this._sameOpacity = entries.every(
-                    entry =>
+                    (entry) =>
                         entry.opacity === value &amp;&amp; (entry._sameOpacity === undefined || entry._sameOpacity === true)
                 );
             }
@@ -1519,7 +1529,7 @@ function LegendBlockFactory(
                 return;
             }
 
-            this._activeEntries.forEach(entry => (entry.opacity = value));
+            this._activeEntries.forEach((entry) => (entry.opacity = value));
 
             updateLegendElementOpacity(this);
 
@@ -1542,7 +1552,7 @@ function LegendBlockFactory(
         // active entries do not include hidden nodes
         get _activeEntries() {
             return this.entries.filter(
-                entry =>
+                (entry) =>
                     entry.blockType === TYPES.SET ||
                     entry.blockType === TYPES.GROUP ||
                     (entry.blockType === TYPES.NODE &amp;&amp; !entry.hidden)
@@ -1551,7 +1561,7 @@ function LegendBlockFactory(
         get _observableEntries() {
             // observable entries are a subset of active entries which are not controlled blocks and are rendered in the UI
             // when calculating group opacity or visibility, exclude controlled layers as they might have locked opacity specified in the config
-            return this._activeEntries.filter(entry => !entry.controlled);
+            return this._activeEntries.filter((entry) => !entry.controlled);
         }
 
         addEntry(entry, position = this._entries.length) {
@@ -1581,7 +1591,7 @@ function LegendBlockFactory(
                 !this.hidden &amp;&amp;
                 this.opacity !== 0 &amp;&amp;
                 (this.state === Geo.Layer.States.REFRESH || this.state === Geo.Layer.States.LOADED) &amp;&amp;
-                this.entries.some(entry => entry.isVisibleOnExport)
+                this.entries.some((entry) => entry.isVisibleOnExport)
             );
         }
     }
@@ -1626,7 +1636,7 @@ function LegendBlockFactory(
             // find a new entry selected in the visibility group by a user;
             // it must differ from the already selected entry tracked by the visibility group
             const newlySelectedEntry =
-                this._activeEntries.find(entry => entry.visibility &amp;&amp; entry !== this._selectedEntry) || null;
+                this._activeEntries.find((entry) => entry.visibility &amp;&amp; entry !== this._selectedEntry) || null;
 
             // if found, hide the tracked entry, and keep the reference to the new one
             if (newlySelectedEntry) {
@@ -1636,7 +1646,7 @@ function LegendBlockFactory(
                 this._selectedEntry = newlySelectedEntry;
             }
 
-            const anyVisible = this._activeEntries.some(entry => entry.visibility);
+            const anyVisible = this._activeEntries.some((entry) => entry.visibility);
 
             // if this visiblity set is collapsed and has active entries,
             // hide all other entries except the selection one (or the first of active entreis if the selection is null)
@@ -1644,7 +1654,7 @@ function LegendBlockFactory(
                 const collapsedEntry = this._selectedEntry || this._activeEntries[0];
                 collapsedEntry.hidden = false;
 
-                this._activeEntries.forEach(entry => {
+                this._activeEntries.forEach((entry) => {
                     if (entry !== collapsedEntry) {
                         entry.hidden = true;
                     }
@@ -1656,7 +1666,7 @@ function LegendBlockFactory(
 
         set visibility(value) {
             if (!value) {
-                this._activeEntries.forEach(entry => (entry.visibility = value));
+                this._activeEntries.forEach((entry) => (entry.visibility = value));
             } else if (!this.visibility &amp;&amp; this._activeEntries.length > 0) {
                 // setting the set's visibility to true when one of the entries is already visible has no effect
                 // `this.visibility` will be `false` if there is no visible entries, so turning visiblity on
@@ -1671,7 +1681,7 @@ function LegendBlockFactory(
         }
 
         get _activeEntries() {
-            return this.entries.filter(entry => entry.blockType === TYPES.GROUP || entry.blockType === TYPES.NODE);
+            return this.entries.filter((entry) => entry.blockType === TYPES.GROUP || entry.blockType === TYPES.NODE);
         }
 
         get entries() {
@@ -1721,7 +1731,7 @@ function LegendBlockFactory(
         }
 
         get isVisibleOnExport() {
-            return !this.hidden &amp;&amp; this.opacity !== 0 &amp;&amp; this.entries.some(entry => entry.isVisibleOnExport);
+            return !this.hidden &amp;&amp; this.opacity !== 0 &amp;&amp; this.entries.some((entry) => entry.isVisibleOnExport);
         }
     }
 
@@ -1734,7 +1744,7 @@ function LegendBlockFactory(
 
         ProxyWrapper,
 
-        TYPES
+        TYPES,
     };
 
     return service;
@@ -1849,10 +1859,15 @@ function LegendBlockFactory(
      * @return {String} the aggregated state of the states supplied
      */
     function aggregateStates(states) {
-        const stateNames = [Geo.Layer.States.ERROR, Geo.Layer.States.BAD_PROJECTION, Geo.Layer.States.LOADING,
-            Geo.Layer.States.REFRESH, Geo.Layer.States.LOADED];
+        const stateNames = [
+            Geo.Layer.States.ERROR,
+            Geo.Layer.States.BAD_PROJECTION,
+            Geo.Layer.States.LOADING,
+            Geo.Layer.States.REFRESH,
+            Geo.Layer.States.LOADED,
+        ];
 
-        const stateValues = stateNames.map(name => states.indexOf(name) !== -1);
+        const stateValues = stateNames.map((name) => states.indexOf(name) !== -1);
 
         return stateNames[stateValues.indexOf(true)];
     }
@@ -1900,13 +1915,13 @@ function LegendBlockFactory(
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 15:44:23 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Jul 16 2021 15:53:44 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>

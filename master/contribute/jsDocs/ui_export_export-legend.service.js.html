@@ -34,7 +34,7 @@ const LEGEND_MARGIN = {
     t: 20,
     r: 20,
     b: 20,
-    l: 20
+    l: 20,
 };
 const SECTION_SPACING = 10; // horizontal spacing between legend sections
 
@@ -61,12 +61,12 @@ angular.module('app.ui').service('exportLegendService', exportLegendService);
 
 function exportLegendService($q, $rootElement, appInfo, LegendBlock, configService, gapiService, graphicsService) {
     const service = {
-        generate
+        generate,
     };
 
     const ref = {
         showToast: angular.noop,
-        hasOmittedImage: false
+        hasOmittedImage: false,
     };
 
     return service;
@@ -84,7 +84,14 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
      * @param {Function} showToast a function display a toast notifcation for the user
      * @return {Promise} promise with resolves with a canvas containing the legend
      */
-    async function generate(availableHeight = 500, availableWidth = 1500, preferredSectionWidth = 500, numColumns = 0, legendBlocks = null, showToast) {
+    async function generate(
+        availableHeight = 500,
+        availableWidth = 1500,
+        preferredSectionWidth = 500,
+        numColumns = 0,
+        legendBlocks = null,
+        showToast
+    ) {
         // I think this todo is done.
         // TODO: break item names when they overflow even if there are no spaces in the name
 
@@ -111,7 +118,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
         const sectionInfo = {
             count: numColumns || Math.floor(availableWidth / preferredSectionWidth) || 1, // section count should never be 0
             width: 0,
-            height: 0
+            height: 0,
         };
 
         let svgLegend; // object containing arrays of svg elements
@@ -123,7 +130,11 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
             sectionInfo.count = sectionsUsed || sectionInfo.count;
             sectionInfo.width = getSectionWidth();
             legendDataCopy = angular.copy(
-                await extractLegendTree(legendBlocks || configService.getSync.map.legendBlocks, sectionInfo.width, availableWidth)
+                await extractLegendTree(
+                    legendBlocks || configService.getSync.map.legendBlocks,
+                    sectionInfo.width,
+                    availableWidth
+                )
             );
 
             legendSection.clear();
@@ -150,11 +161,11 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
         hiddenNode.remove();
 
         const localCanvas = document.createElement('canvas'); // create canvas element
-        const generationPromise = new Promise(resolve => {
+        const generationPromise = new Promise((resolve) => {
             canvg(localCanvas, legend.node.outerHTML, {
                 ignoreAnimation: true,
                 ignoreMouse: true,
-                renderCallback: () => resolve(localCanvas)
+                renderCallback: () => resolve(localCanvas),
             });
         });
 
@@ -195,9 +206,9 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
         const lineStoreSet = svgLegend.lines; // use a group line set from svgLegend
 
         // moves legend items from an array to a set
-        svgLegend.items.forEach(svg => itemStoreSet.add(svg));
+        svgLegend.items.forEach((svg) => itemStoreSet.add(svg));
 
-        svgLegend.items.forEach(svg => {
+        svgLegend.items.forEach((svg) => {
             // wrap the legend at elements previously marked
             // NOTE: svg.remember('self') retrieves the item that spawned the svg
             // it is a direct reference so the 'splitBefore' added by geoApi can be seen
@@ -287,13 +298,13 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
         const itemStore = [];
         const lineSet = container.set();
 
-        items.forEach(item => makeLegendElement(item));
+        items.forEach((item) => makeLegendElement(item));
 
         return {
             container,
             height: runningHeight,
             items: itemStore,
-            lines: lineSet
+            lines: lineSet,
         };
 
         /**
@@ -315,7 +326,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                 }
                 // Need to keep a height on the item for geoApi calculations
                 item.height = 0;
-                item.items.forEach(i => {
+                item.items.forEach((i) => {
                     makeInfoItem(i);
                     item.height += i.height;
                 });
@@ -336,7 +347,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 
             makeHeader(layer, 18);
 
-            layer.items.forEach(item => {
+            layer.items.forEach((item) => {
                 if (item.hasOwnProperty('items')) {
                     makeGroup(item);
                 } else {
@@ -364,7 +375,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
             const startHeight = runningHeight;
             runningIndent++;
 
-            group.items.forEach(item => {
+            group.items.forEach((item) => {
                 makeLegendElement(item);
             });
 
@@ -397,13 +408,10 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                 'font-family': 'Roboto',
                 'font-weight': 'normal',
                 'font-size': 14,
-                anchor: 'start'
+                anchor: 'start',
             };
 
-            const imageItem = legendItem
-                .group()
-                .svg(svgcode)
-                .first();
+            const imageItem = legendItem.group().svg(svgcode).first();
             const imageItemViewbox = imageItem.viewbox();
 
             /// Use the narrower width as the bound for the image
@@ -485,7 +493,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                     'font-family': 'Roboto',
                     'font-weight': 'normal',
                     'font-size': size,
-                    anchor: 'start'
+                    anchor: 'start',
                 })
                 .remember('self', item)
                 .move(runningIndent * indentD, runningHeight); // TODO: add gutter;
@@ -514,18 +522,18 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
     function extractLegendTree(legendBlock, sectionWidth, availableWidth) {
         // `TYPE_TO_SYMBOLOGY` functions return promises
         const TYPE_TO_SYMBOLOGY = {
-            [LegendBlock.TYPES.NODE]: entry =>
+            [LegendBlock.TYPES.NODE]: (entry) =>
                 Promise.resolve({
                     name: entry.name,
-                    items: _cleanSymbologyStack(entry.symbologyStack.stack)
+                    items: _cleanSymbologyStack(entry.symbologyStack.stack),
                 }),
-            [LegendBlock.TYPES.GROUP]: async entry => ({
+            [LegendBlock.TYPES.GROUP]: async (entry) => ({
                 name: entry.name,
-                items: await extractLegendTree(entry, sectionWidth, availableWidth)
+                items: await extractLegendTree(entry, sectionWidth, availableWidth),
             }),
             [LegendBlock.TYPES.SET]: () => Promise.resolve(null),
             // eslint-disable-next-line complexity
-            [LegendBlock.TYPES.INFO]: async entry => {
+            [LegendBlock.TYPES.INFO]: async (entry) => {
                 if (entry.infoType === 'image') {
                     const svgCode = await _cleanImage(entry.content);
                     return {
@@ -533,7 +541,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                         items: [{ name: '', svgcode: svgCode }],
                         blockType: LegendBlock.TYPES.INFO,
                         infoType: entry.infoType,
-                        height: $(svgCode).height()
+                        height: $(svgCode).height(),
                     };
                 } else {
                     const content = entry.layerName || entry.content;
@@ -544,7 +552,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                             name: removeMd(content),
                             items: _cleanSymbologyStack(entry.symbologyStack.stack) || [],
                             blockType: LegendBlock.TYPES.INFO,
-                            infoType: entry.infoType
+                            infoType: entry.infoType,
                         };
                     }
 
@@ -556,7 +564,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                             name: entry.layerName || entry.content,
                             items: entry.symbologyStack.stack || [],
                             blockType: LegendBlock.TYPES.INFO,
-                            infoType: entry.infoType
+                            infoType: entry.infoType,
                         });
                     }
 
@@ -594,16 +602,14 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                         items: [
                             {
                                 name: '',
-                                svgcode: `&lt;svg xmlns:xlink="http://www.w3.org/1999/xlink" height="${height}" width="${correctedWidth}">&lt;image height="${height}" width="${correctedWidth}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="${
-                                    img.src
-                                }">&lt;/image>&lt;/svg>`
-                            }
+                                svgcode: `&lt;svg xmlns:xlink="http://www.w3.org/1999/xlink" height="${height}" width="${correctedWidth}">&lt;image height="${height}" width="${correctedWidth}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="${img.src}">&lt;/image>&lt;/svg>`,
+                            },
                         ].concat(_cleanSymbologyStack(entry.symbologyStack.stack) || []),
                         blockType: LegendBlock.TYPES.INFO,
-                        infoType: entry.infoType
+                        infoType: entry.infoType,
                     });
                 }
-            }
+            },
         };
 
         // TODO: decide if symbology from the duplicated layer should be included in the export image
@@ -612,14 +618,14 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 
         /**
          * Traverses the legendBlock object and builds a list of items to include in the legend export.
-         * 
+         *
          * @function iterateLegendBlock
-         * @param {*} legendBlock 
+         * @param {*} legendBlock
          * @return {Array} A list of legendBlock entries and null values
          */
         function iterateLegendBlock(legendBlock) {
             let returnVal = [];
-            legendBlock.entries.forEach((entry) => { 
+            legendBlock.entries.forEach((entry) => {
                 returnVal.push(_showBlock(entry) ? TYPE_TO_SYMBOLOGY[entry.blockType](entry) : null);
                 if (entry.blockType !== LegendBlock.TYPES.GROUP &amp;&amp; entry.entries) {
                     returnVal = returnVal.concat(iterateLegendBlock(entry));
@@ -630,12 +636,12 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 
         let titleBefore = false;
 
-        return Promise.all(legendTreeData).then(data =>
+        return Promise.all(legendTreeData).then((data) =>
             data
                 // filter out nulls
-                .filter(a => a !== null)
+                .filter((a) => a !== null)
                 // filter out non-info blocks with no symbology
-                .filter(entry => entry.blockType === LegendBlock.TYPES.INFO || entry.items.length > 0)
+                .filter((entry) => entry.blockType === LegendBlock.TYPES.INFO || entry.items.length > 0)
                 // clear out titles where everything below it (or in between another title) has been removed
                 // The two reverses let us filter backwards, making detection of bad titles easier.
                 .reverse()
@@ -688,8 +694,8 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 
         const {
             services: {
-                export: { cleanCanvas }
-            }
+                export: { cleanCanvas },
+            },
         } = configService.getSync;
 
         // if `cleanCanvas` is not set, do nothing
@@ -697,7 +703,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
             return stack;
         }
 
-        const cleaneddStack = stack.map(symbologyItem => {
+        const cleaneddStack = stack.map((symbologyItem) => {
             const { name, image, svgcode } = symbologyItem;
 
             // it's already base 64, hence won't taint the canvas
@@ -708,10 +714,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
             } else {
                 const draw = graphicsService.createSvg(100, 100).svg(svgcode);
                 // get the image from the svg and its bounding box
-                const bbox = draw
-                    .select('image')
-                    .get(0)
-                    .bbox();
+                const bbox = draw.select('image').get(0).bbox();
 
                 // create a placeholder box of the same size and fill it with grey
                 // TODO: add a note in it that it can't be exported
@@ -723,7 +726,7 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
                 return {
                     name,
                     image,
-                    svgcode: placeholder.svg()
+                    svgcode: placeholder.svg(),
                 };
             }
         });
@@ -745,8 +748,8 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 
         const {
             services: {
-                export: { cleanCanvas }
-            }
+                export: { cleanCanvas },
+            },
         } = configService.getSync;
 
         let dataUrl = imgUrl;
@@ -794,13 +797,13 @@ function exportLegendService($q, $rootElement, appInfo, LegendBlock, configServi
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="app.common.module_displayManager.html">displayManager</a></li><li><a href="app.common.module_stateManager.html">stateManager</a></li><li><a href="app.core.module_common.html">common</a></li><li><a href="app.core.module_ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_configService.html">configService</a></li><li><a href="app.geo.module_gapiService.html">gapiService</a></li><li><a href="app.geo.module_Geo.html">Geo</a></li><li><a href="app.geo.module_geoService.html">geoService</a></li><li><a href="app.geo.module_identifyService.html">identifyService</a></li><li><a href="app.geo.module_layerRegistry.html">layerRegistry</a></li><li><a href="app.geo.module_LegendBlock.html">LegendBlock</a></li><li><a href="app.geo.module_LegendElementFactory.html">LegendElementFactory</a></li><li><a href="app.geo.module_legendService.html">legendService</a></li><li><a href="app.geo.module_locateService.html">locateService</a></li><li><a href="app.geo.module_mapService.html">mapService</a></li><li><a href="app.geo.module_mapToolService.html">mapToolService</a></li><li><a href="app.geo.module_metadataService.html">metadataService</a></li><li><a href="app.geo.module_rvInitMap.html">rvInitMap</a></li><li><a href="app.geo.module_rvOverviewToggle.html">rvOverviewToggle</a></li><li><a href="app.layout.module_animationService.html">animationService</a></li><li><a href="app.layout.module_layoutService.html">layoutService</a></li><li><a href="app.layout.module_referenceService.html">referenceService</a></li><li><a href="app.layout.module_rvShell.html">rvShell</a></li><li><a href="app.module_core.html">core</a></li><li><a href="app.module_ui.html">ui</a></li><li><a href="app.ui.module_basemapService.html">basemapService</a></li><li><a href="app.ui.module_detailService.html">detailService</a></li><li><a href="app.ui.module_errorService.html">errorService</a></li><li><a href="app.ui.module_expandImageService.html">expandImageService</a></li><li><a href="app.ui.module_ExportComponent.html">ExportComponent</a></li><li><a href="app.ui.module_exportGenerators.html">exportGenerators</a></li><li><a href="app.ui.module_ExportSize.html">ExportSize</a></li><li><a href="app.ui.module_exportSizesService.html">exportSizesService</a></li><li><a href="app.ui.module_fullScreenService.html">fullScreenService</a></li><li><a href="app.ui.module_geosearchFiltersService.html">geosearchFiltersService</a></li><li><a href="app.ui.module_geosearchService.html">geosearchService</a></li><li><a href="app.ui.module_helpService.html">helpService</a></li><li><a href="app.ui.module_highlightFilter.html">highlightFilter</a></li><li><a href="app.ui.module_layerSource.html">layerSource</a></li><li><a href="app.ui.module_mapNavigationService.html">mapNavigationService</a></li><li><a href="app.ui.module_rvAppbar.html">rvAppbar</a></li><li><a href="app.ui.module_rvBasemap.html">rvBasemap</a></li><li><a href="app.ui.module_rvBasemapItem.html">rvBasemapItem</a></li><li><a href="app.ui.module_rvContentPane.html">rvContentPane</a></li><li><a href="app.ui.module_rvDetails.html">rvDetails</a></li><li><a href="app.ui.module_rvDetailsContent.html">rvDetailsContent</a></li><li><a href="app.ui.module_rvDetailsHeader.html">rvDetailsHeader</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeature.html">rvDetailsRecordEsrifeature</a></li><li><a href="app.ui.module_rvDetailsRecordEsrifeatureItem.html">rvDetailsRecordEsrifeatureItem</a></li><li><a href="app.ui.module_rvDetailsRecordHtml.html">rvDetailsRecordHtml</a></li><li><a href="app.ui.module_rvDetailsRecordText.html">rvDetailsRecordText</a></li><li><a href="app.ui.module_rvDetectScrollbar.html">rvDetectScrollbar</a></li><li><a href="app.ui.module_rvDragula.html">rvDragula</a></li><li><a href="app.ui.module_rvExportCustomSize.html">rvExportCustomSize</a></li><li><a href="app.ui.module_rvGeosearch.html">rvGeosearch</a></li><li><a href="app.ui.module_rvGeosearchBar.html">rvGeosearchBar</a></li><li><a href="app.ui.module_rvGeosearchBottomFilters.html">rvGeosearchBottomFilters</a></li><li><a href="app.ui.module_rvGeosearchTopFilters.html">rvGeosearchTopFilters</a></li><li><a href="app.ui.module_rvHelpOverlay.html">rvHelpOverlay</a></li><li><a href="app.ui.module_rvHelpSearch.html">rvHelpSearch</a></li><li><a href="app.ui.module_rvLayerListSlider.html">rvLayerListSlider</a></li><li><a href="app.ui.module_rvLegendBlock.html">rvLegendBlock</a></li><li><a href="app.ui.module_rvLoaderFile.html">rvLoaderFile</a></li><li><a href="app.ui.module_rvLoaderMenu.html">rvLoaderMenu</a></li><li><a href="app.ui.module_rvMapnav.html">rvMapnav</a></li><li><a href="app.ui.module_rvMapnavButton.html">rvMapnavButton</a></li><li><a href="app.ui.module_rvMenuLink.html">rvMenuLink</a></li><li><a href="app.ui.module_rvMetadataContent.html">rvMetadataContent</a></li><li><a href="app.ui.module_rvMetadataPanel.html">rvMetadataPanel</a></li><li><a href="app.ui.module_rvMorph.html">rvMorph</a></li><li><a href="app.ui.module_rvPlugSlide.html">rvPlugSlide</a></li><li><a href="app.ui.module_rvReverse.html">rvReverse</a></li><li><a href="app.ui.module_rvSettings.html">rvSettings</a></li><li><a href="app.ui.module_rvSettingsContent.html">rvSettingsContent</a></li><li><a href="app.ui.module_rvSidenav.html">rvSidenav</a></li><li><a href="app.ui.module_rvStepperItem.html">rvStepperItem</a></li><li><a href="app.ui.module_rvSymbologyStack.html">rvSymbologyStack</a></li><li><a href="app.ui.module_rvTableDefault.html">rvTableDefault</a></li><li><a href="app.ui.module_rvTableDefaultMenu.html">rvTableDefaultMenu</a></li><li><a href="app.ui.module_rvTablePanel.html">rvTablePanel</a></li><li><a href="app.ui.module_rvToc.html">rvToc</a></li><li><a href="app.ui.module_rvTocEntryControl.html">rvTocEntryControl</a></li><li><a href="app.ui.module_rvTocExpandMenu.html">rvTocExpandMenu</a></li><li><a href="app.ui.module_rvTocVisibilityMenu.html">rvTocVisibilityMenu</a></li><li><a href="app.ui.module_rvToggleSlide.html">rvToggleSlide</a></li><li><a href="app.ui.module_rvTooltip.html">rvTooltip</a></li><li><a href="app.ui.module_rvTruncate.html">rvTruncate</a></li><li><a href="app.ui.module_sideNavigationService.html">sideNavigationService</a></li><li><a href="app.ui.module_StepperFactory.html">StepperFactory</a></li><li><a href="app.ui.module_SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tableService.html">tableService</a></li><li><a href="app.ui.module_tocService.html">tocService</a></li><li><a href="app.ui.module_tooltipService.html">tooltipService</a></li><li><a href="material.components.button.module_MdButtonDirectiveDecorator.html">MdButtonDirectiveDecorator</a></li><li><a href="material.components.dialog.module_$mdDialog.html">$mdDialog</a></li><li><a href="material.components.icon.module_mdIconDirectiveDecorator.html">mdIconDirectiveDecorator</a></li><li><a href="material.components.menu.module_mdMenuDirective.html">mdMenuDirective</a></li><li><a href="material.components.menu.module_mdSelectDirective.html">mdSelectDirective</a></li><li><a href="material.components.menuBar.module_mdMenuItemDirectiveDecorator.html">mdMenuItemDirectiveDecorator</a></li><li><a href="material.components.select.module_mdSelectMenuDirective.html">mdSelectMenuDirective</a></li><li><a href="material.components.tooltip.module_mdTooltipDirective.html">mdTooltipDirective</a></li></ul><h3>Namespaces</h3><ul><li><a href="app.html">app</a></li><li><a href="app.core.html">core</a></li><li><a href="app.geo.html">geo</a></li><li><a href="app.layout.html">layout</a></li><li><a href="app.ui.html">ui</a></li></ul><h3>Classes</h3><ul><li><a href="app.core.module_ConfigObject-About.html">About</a></li><li><a href="app.core.module_ConfigObject-Basemap.html">Basemap</a></li><li><a href="app.core.module_ConfigObject-ConfigObject.html">ConfigObject</a></li><li><a href="app.core.module_ConfigObject-Entry.html">Entry</a></li><li><a href="app.core.module_ConfigObject-ExportComponent.html">ExportComponent</a></li><li><a href="app.core.module_ConfigObject-ExportService.html">ExportService</a></li><li><a href="app.core.module_ConfigObject-ExtentSet.html">ExtentSet</a></li><li><a href="app.core.module_ConfigObject-Help.html">Help</a></li><li><a href="app.core.module_ConfigObject-InfoSection.html">InfoSection</a></li><li><a href="app.core.module_ConfigObject-InitialLayerSettings.html">InitialLayerSettings</a></li><li><a href="app.core.module_ConfigObject-LayerNode.html">LayerNode</a></li><li><a href="app.core.module_ConfigObject-Legend.html">Legend</a></li><li><a href="app.core.module_ConfigObject-LegendExportComponent.html">LegendExportComponent</a></li><li><a href="app.core.module_ConfigObject-LegendIsOpen.html">LegendIsOpen</a></li><li><a href="app.core.module_ConfigObject-LodSet.html">LodSet</a></li><li><a href="app.core.module_ConfigObject-Map.html">Map</a></li><li><a href="app.core.module_ConfigObject-NavBar.html">NavBar</a></li><li><a href="app.core.module_ConfigObject-Services.html">Services</a></li><li><a href="app.core.module_ConfigObject-SideMenu.html">SideMenu</a></li><li><a href="app.core.module_ConfigObject-StartPoint.html">StartPoint</a></li><li><a href="app.core.module_ConfigObject-TableIsOpen.html">TableIsOpen</a></li><li><a href="app.core.module_ConfigObject-TileSchema.html">TileSchema</a></li><li><a href="app.core.module_ConfigObject-UI.html">UI</a></li><li><a href="app.core.module_ConfigObject-UILegend.html">UILegend</a></li><li><a href="app.core.module_ConfigObject-VisibilitySet.html">VisibilitySet</a></li><li><a href="app.core.module_configService-Config.html">Config</a></li><li><a href="app.geo.module_LegendBlock-LegendGroup.html">LegendGroup</a></li><li><a href="app.geo.module_LegendBlock-ProxyWrapper.html">ProxyWrapper</a></li><li><a href="app.geo.module_LegendElementFactory-SymbologyControl.html">SymbologyControl</a></li><li><a href="app.ui.module_StepperFactory-Stepper.html">Stepper</a></li><li><a href="app.ui.module_SymbologyStack-SymbologyStack.html">SymbologyStack</a></li><li><a href="app.ui.module_tooltipService-ContainInside.html">ContainInside</a></li><li><a href="app.ui.module_tooltipService-FollowMap.html">FollowMap</a></li><li><a href="app.ui.module_tooltipService-FollowMouse.html">FollowMouse</a></li><li><a href="app.ui.module_tooltipService-Tooltip.html">Tooltip</a></li><li><a href="app.ui.module_tooltipService-TooltipStrategy.html">TooltipStrategy</a></li><li><a href="ConfigObject.UI.html">UI</a></li><li><a href="ExportSize.html">ExportSize</a></li><li><a href="ToggleSymbol.html">ToggleSymbol</a></li><li><a href="Viewer.html">Viewer</a></li><li><a href="ViewerGroup.html">ViewerGroup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$on">$on</a></li><li><a href="global.html#_cfg">_cfg</a></li><li><a href="global.html#addViewer">addViewer</a></li><li><a href="global.html#applyDefault">applyDefault</a></li><li><a href="global.html#autolink">autolink</a></li><li><a href="global.html#centerAndZoom">centerAndZoom</a></li><li><a href="global.html#changeIconFocus">changeIconFocus</a></li><li><a href="global.html#configureParser">configureParser</a></li><li><a href="global.html#createCanvas">createCanvas</a></li><li><a href="global.html#createSvg">createSvg</a></li><li><a href="global.html#dateTimeZone">dateTimeZone</a></li><li><a href="global.html#disableCommonPrototypes">disableCommonPrototypes</a></li><li><a href="global.html#elemIsFocusable">elemIsFocusable</a></li><li><a href="global.html#focus">focus</a></li><li><a href="global.html#focusableSearch">focusableSearch</a></li><li><a href="global.html#getBookmark">getBookmark</a></li><li><a href="global.html#getConfig">getConfig</a></li><li><a href="global.html#getCurrentLang">getCurrentLang</a></li><li><a href="global.html#getTextWidth">getTextWidth</a></li><li><a href="global.html#hasLink">hasLink</a></li><li><a href="global.html#imageLoader">imageLoader</a></li><li><a href="global.html#initialBookmark">initialBookmark</a></li><li><a href="global.html#isTainted">isTainted</a></li><li><a href="global.html#isValid">isValid</a></li><li><a href="global.html#lastVisibleHistoryElement">lastVisibleHistoryElement</a></li><li><a href="global.html#link">link</a></li><li><a href="global.html#mergeCanvases">mergeCanvases</a></li><li><a href="global.html#noSourceLink">noSourceLink</a></li><li><a href="global.html#onFocusin">onFocusin</a></li><li><a href="global.html#onFocusout">onFocusout</a></li><li><a href="global.html#onKeydown">onKeydown</a></li><li><a href="global.html#onKeyup">onKeyup</a></li><li><a href="global.html#onMouseDown">onMouseDown</a></li><li><a href="global.html#picture">picture</a></li><li><a href="global.html#preLoadApiBlock">preLoadApiBlock</a></li><li><a href="global.html#process">process</a></li><li><a href="global.html#projectGeometry">projectGeometry</a></li><li><a href="global.html#readyDelay">readyDelay</a></li><li><a href="global.html#resetIconFocus">resetIconFocus</a></li><li><a href="global.html#restoreSession">restoreSession</a></li><li><a href="global.html#RV">RV</a></li><li><a href="global.html#rvCrosshairs">rvCrosshairs</a></li><li><a href="global.html#rvDefaults">rvDefaults</a></li><li><a href="global.html#rvFailureImage">rvFailureImage</a></li><li><a href="global.html#rvFocus">rvFocus</a></li><li><a href="global.html#rvNorthArrow">rvNorthArrow</a></li><li><a href="global.html#rvState">rvState</a></li><li><a href="global.html#setExtent">setExtent</a></li><li><a href="global.html#setMapCursor">setMapCursor</a></li><li><a href="global.html#setSvgHref">setSvgHref</a></li><li><a href="global.html#shellService">shellService</a></li><li><a href="global.html#shiftFocus">shiftFocus</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#svgToCanvas">svgToCanvas</a></li><li><a href="global.html#uid">uid</a></li><li><a href="global.html#updateNorthArrow">updateNorthArrow</a></li><li><a href="global.html#useBookmark">useBookmark</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 04 2019 15:44:23 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Jul 16 2021 15:53:44 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
